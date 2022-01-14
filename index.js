@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
+const fs = require('fs').promises;
 const verifyEmail = require('./middlewares/verifyEmail');
 const verifyPassword = require('./middlewares/verifyPassword');
 
@@ -14,20 +14,25 @@ const HTTP_OK = 200;
 const HTTP_ERROR = 404;
 const PORT = '3000';
 
+const jsonParseFunc = async () => {
+  const data = await fs.readFile(talker);
+  return JSON.parse(data);
+};
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get('/talker', (_req, res) => {
-  const data = JSON.parse(fs.readFileSync(talker, 'utf8'));
+app.get('/talker', async (_req, res) => {
+  const data = await jsonParseFunc();
   if (data.length === 0) return res.status(HTTP_OK).json([]);
   return res.status(HTTP_OK).json(data);
 });
 
-app.get('/talker/:id', (req, res) => {
+app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
-  const data = JSON.parse(fs.readFileSync(talker, 'utf8'));
+  const data = await jsonParseFunc();
   const talkerFind = data.find((tf) => tf.id === Number(id));
   if (!talkerFind) {
     return res.status(HTTP_ERROR).json({ message: 'Pessoa palestrante não encontrada' });
