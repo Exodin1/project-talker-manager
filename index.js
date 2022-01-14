@@ -20,9 +20,16 @@ const HTTP_ERROR = 404;
 const PORT = '3000';
 
 const jsonParseFunc = async () => {
-  const data = await fs.readFile(talker);
+  const data = await fs.readFile('./talker.json', 'utf8');
   return JSON.parse(data);
 };
+
+app.get('/talker/search', verifyToken, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await jsonParseFunc();
+  const filter = talkers.filter((tk) => tk.name.includes(q));
+  return res.status(HTTP_OK_STATUS).json(filter);
+});
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {

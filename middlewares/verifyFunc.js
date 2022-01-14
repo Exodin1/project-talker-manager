@@ -2,7 +2,6 @@ const HTTP_ERROR_STATUS = 400;
 
 const verifyToken = (request, response, next) => {
   const { authorization } = request.headers;
-  console.log(authorization);
 
   if (!authorization) {
     return response.status(401).json({ message: 'Token não encontrado' });
