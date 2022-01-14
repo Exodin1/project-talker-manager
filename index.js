@@ -64,6 +64,22 @@ app.post('/talker',
     return res.status(201).json(newTalker);
 });
 
+app.put('/talker/:id',
+ verifyToken,
+ verifyName,
+ verifyAge,
+ verifyTalk,
+ verifyRate,
+ verifyWatchedAt,
+ async (req, res) => {
+   const { id } = req.params;
+   const data = await jsonParseFunc();
+   const talkerUpdated = { id: Number(id), ...req.body };
+   const talkerFilter = data.filter((tf) => tf.id !== Number(id));
+   await fs.writeFile(talker, JSON.stringify([...talkerFilter, talkerUpdated]));
+   return res.status(HTTP_OK_STATUS).json(talkerUpdated);
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
