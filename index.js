@@ -80,6 +80,14 @@ app.put('/talker/:id',
    return res.status(HTTP_OK_STATUS).json(talkerUpdated);
 });
 
+app.delete('/talker/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const data = await jsonParseFunc();
+  const talkerFind = data.find((tf) => tf.id === Number(id));
+  await fs.writeFile(talker, JSON.stringify(talkerFind));
+  return res.status(204).json({ message: 'Pessoa palestrante removida com sucesso' });
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
